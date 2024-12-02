@@ -14,30 +14,40 @@ datasource db {
 }
 
 model Media {
-  mediaId String @id @default(cuid())
+  media_id String @id @default(uuid()) @unique
   title String
   status String
-  mediaType String
-  contentType String
+  media_type String
+  content_type String
   duration Int
-  publishDate DateTime
-  tags String
-  customParameters Json
-  images Json[] 
-  tracks Json[] 
-  assets Json[] 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  publish_date DateTime
+  tags String[]
+  custom_parameters Json @db.JsonB
+  images Json[] @db.JsonB
+  tracks Json[] @db.JsonB
+  assets Json[] @db.JsonB
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([custom_parameters], name: "media_custom_parameters_idx")
+  @@index([images], name: "media_images_idx")
+  @@index([tracks], name: "media_tracks_idx")
+  @@index([assets], name: "media_assets_idx")
+  @@index([tags], name: "media_tags_idx")
 }
 
 model Playlist {
-  playlistId       String   @id @default(uuid()) @unique
-  title            String
-  type             String
-  playlist         Json[]    
-  description      String? 
-  customParameters Json       
-  playlistConfig   Json     @default("{}")
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  playlist_id String @id @default(uuid()) @unique
+  title String
+  type String
+  playlist Json[] @db.JsonB
+  description String? 
+  custom_parameters Json @db.JsonB     
+  playlist_config Json @db.JsonB @default("{}")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([playlist], name: "playlist_idx")
+  @@index([custom_parameters], name: "playlist_custom_parameters_idx")
+  @@index([playlist_config], name: "playlist_config_idx")
 }
