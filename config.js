@@ -4,7 +4,7 @@ dotenv.config();
 
 const config = {
   db: {
-    host: process.env.DB_HOST || "192.168.2.222",
+    host: process.env.DB_HOST || "localhost",
     user: process.env.DB_USER || "postgres",
     pass: process.env.DB_PASS || "postgres",
     name: process.env.DB_NAME || "dsp",
