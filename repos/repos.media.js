@@ -9,10 +9,10 @@ export async function fetchMediaItems() {
   }
 }
 
-export async function fetchMediaItemById(mediaId) {
+export async function fetchMediaItemById(media_id) {
   try {
-    const media: any = await prisma.$queryRaw`SELECT * FROM "Media" m WHERE m."mediaId" = ${mediaId}`;
-    return media? media[0]: null;
+    const media = await prisma.$queryRaw`SELECT * FROM "Media" m WHERE m."media_id" = ${media_id}`;
+    return media[0];
   } catch (err) {
     console.error("Error fetching media item by ID:", err);
     return null;
@@ -32,22 +32,22 @@ export async function fetchDynamicMediaItems(playlistConfig) {
     let query = `SELECT * FROM "Media" m WHERE 1=1`;
 
     if (tags?.include) {
-      query += ` AND m."tags" ILIKE '%${tags.include}%'`;
+      query += ` AND m."tags" @> ARRAY['${tags.include}']::text[]`;
     }
 
     if (tags?.exclude) {
-      query += ` AND m."tags" NOT ILIKE '%${tags.exclude}%'`;
+      query += ` AND NOT (m."tags" && ARRAY['${tags.exclude}']::text[])`;
     }
 
     if (customParameters?.include) {
       Object.entries(customParameters.include).forEach(([key, value]) => {
-        query += ` AND m."customParameters" @> '{"${key}": "${value}"}'`;
+        query += ` AND m."custom_parameters" @> '{"${key}": "${value}"}'`;
       });
     }
 
     if (customParameters?.exclude) {
       Object.entries(customParameters.exclude).forEach(([key, value]) => {
-        query += ` AND m."customParameters" NOT @> '{"${key}": "${value}"}'`;
+        query += ` AND m."custom_parameters" NOT @> '{"${key}": "${value}"}'`;
       });
     }
 
@@ -61,7 +61,7 @@ export async function fetchDynamicMediaItems(playlistConfig) {
     const playlistPreview = await prisma.$queryRawUnsafe(query);
 
     return playlistPreview;
-  } catch (err: unknown) {
+  } catch (err) {
     if (err instanceof Error) {
       console.error("Error fetching playlist preview:", err.message);
     } else {
