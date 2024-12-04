@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "repository": "git@github.com:Rajesh4013/graphql-nodeexpress-boilerplate.git",
   "author": "<rajesh_kandregula@tecnics.com>",
