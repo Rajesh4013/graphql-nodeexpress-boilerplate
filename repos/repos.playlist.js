@@ -1,19 +1,19 @@
 import { prismaConnection as prisma } from "../connection.js";
 
-export async function createPlaylist(inputPlaylist, playlistConfig) {
+export async function createPlaylist(inputPlaylist, playlist_config) {
   try {
-    const { title, feedid, kind, description, playlist, ...customParameters } =
+    const { title, feedid, type, description, playlist, ...customParameters } =
       inputPlaylist;
 
     const playlistData = await prisma.playlist.create({
       data: {
-        playlistId: feedid,
+        playlist_id: feedid,
         title,
-        type: kind,
+        type,
         description,
         playlist,
-        customParameters,
-        playlistConfig,
+        custom_parameters: customParameters,
+        playlist_config,
       },
     });
 
