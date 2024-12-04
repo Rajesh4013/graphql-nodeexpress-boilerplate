@@ -1,24 +1,19 @@
 export function formatMedia(rawMedia) {
     if (!rawMedia) return null;
 
-    const { title, mediaId, images, duration, publishDate: pubDate, tags, assets: sources, tracks, customParameters, } = rawMedia;
-
+    const { title, media_id, duration, publish_date, tags, custom_parameters, media_type } = rawMedia;
     return {
         title,
         description: title,
-        kind: "Single Item",
+        kind: media_type,
         playlist: [
             {
                 title,
-                mediaid: mediaId,
-                image: (images[0])?.url,
-                images,
+                media_id,
                 duration,
-                pubDate,
+                publish_date,
                 tags,
-                sources,
-                tracks,
-                ...(customParameters || {}),
+                ...(custom_parameters || {}),
             },
         ],
     };
