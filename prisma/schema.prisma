@@ -18,21 +18,14 @@ model Media {
   title String
   status String
   media_type String
-  content_type String
   duration Int
   publish_date DateTime
   tags String[]
   custom_parameters Json @db.JsonB
-  images Json[] @db.JsonB
-  tracks Json[] @db.JsonB
-  assets Json[] @db.JsonB
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
   @@index([custom_parameters], name: "media_custom_parameters_idx")
-  @@index([images], name: "media_images_idx")
-  @@index([tracks], name: "media_tracks_idx")
-  @@index([assets], name: "media_assets_idx")
   @@index([tags], name: "media_tags_idx")
 }
 
