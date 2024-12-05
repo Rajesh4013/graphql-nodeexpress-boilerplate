@@ -7,6 +7,7 @@ import { formatPlaylist } from "../utils/utils.playlist.js";
 
 export async function createPlaylist(playlistMetadata, dynamicPlaylistConfig) {
   const mediaItems = await fetchDynamicMediaItems(dynamicPlaylistConfig);
+  console.log(mediaItems.length);
   const convertedMediaItems = await Promise.all(
     mediaItems.map((mediaItem) => formatMedia(mediaItem))
   );
@@ -17,10 +18,13 @@ export async function createPlaylist(playlistMetadata, dynamicPlaylistConfig) {
     playlist: convertedMediaItems,
     ...playlistMetadata,
   });
+  // console.log(playlist.playlist);
 
-  return formatPlaylist(
-    await repos.createPlaylist(playlist, dynamicPlaylistConfig)
-  );
+  const createdPlaylist = await repos.createPlaylist(playlist);
+  return formatPlaylist(createdPlaylist);
+  // return formatPlaylist(
+  //   await repos.createPlaylist(playlist, dynamicPlaylistConfig)
+  // );
 }
 
 export async function updatePlaylist(
@@ -45,5 +49,8 @@ export async function updatePlaylist(
 }
 
 export async function getPlaylistById(playlistId) {
-  return formatPlaylist(await repos.getPlaylistById(playlistId));
+  const playlist = await repos.getPlaylistById(playlistId)
+  console.log(playlist);
+  // return formatPlaylist(await repos.getPlaylistById(playlistId));
+  return formatPlaylist(playlist);
 }
