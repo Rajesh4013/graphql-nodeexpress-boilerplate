@@ -19,7 +19,7 @@ export async function createPlaylist(inputPlaylist, playlist_config) {
 
     return playlistData;
   } catch (error) {
-    // console.log(`Error creating playlist: ${error.message}`);
+    console.log(`Error creating playlist: ${error.message}`);
     throw new Error("Failed to create playlist. Please try again later.");
   }
 }
@@ -52,12 +52,12 @@ export async function getPlaylistById(playlistId) {
   try {
     const playlist = await prisma.playlist.findUnique({
       where: {
-        playlistId,
+        playlist_id: playlistId,
       },
     });
     return playlist;
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     return null;
   }
 }
