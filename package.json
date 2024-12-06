@@ -12,6 +12,7 @@
   "dependencies": {
     "@prisma/client": "^6.0.0",
     "apollo-server-express": "^3.13.0",
+    "csv-parser": "^3.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "graphql": "^16.9.0",
