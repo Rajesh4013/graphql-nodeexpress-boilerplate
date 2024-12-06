@@ -22,20 +22,11 @@ export async function fetchMediaItemById(media_id) {
 export async function fetchDynamicMediaItems(playlistConfig) {
   const {
     tags,
-    custom_parameters,
-    page_number,
-    items_per_page,
+    customParameters,
+    pageNumber = 1,
+    itemsPerPage = 500,
     sort,
   } = playlistConfig;
-  const customParameters = custom_parameters;
-  let itemsPerPage = items_per_page;
-  let pageNumber = page_number;
-  if (pageNumber == undefined) {
-    pageNumber = 1;
-  }
-  if (itemsPerPage == undefined) {
-    itemsPerPage = 500;
-  }
 
   try {
     let query = `SELECT * FROM "Media" m WHERE 1=1`;
