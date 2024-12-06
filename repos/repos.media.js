@@ -36,14 +36,12 @@ export async function fetchDynamicMediaItems(playlistConfig) {
   if (itemsPerPage == undefined) {
     itemsPerPage = 500;
   }
-  console.log(playlistConfig, itemsPerPage, pageNumber);
-  // itemsPerPage = playlistConfig.itemsPerPage? playlistConfig.itemsPerPage : itemsPerPage;
 
   try {
     let query = `SELECT * FROM "Media" m WHERE 1=1`;
 
     if (tags?.include) {
-      query += ` AND m."tags" @> ARRAY['${tags.include}']::text[]`;
+      query += ` AND m."tags" @> ARRAY${JSON.stringify(tags.include).replaceAll("\"", "'")}::text[]`;
     }
 
     if (tags?.exclude) {
@@ -58,7 +56,7 @@ export async function fetchDynamicMediaItems(playlistConfig) {
 
     if (customParameters?.exclude) {
       Object.entries(customParameters.exclude).forEach(([key, value]) => {
-        query += ` AND m."custom_parameters" NOT @> '{"${key}": "${value}"}'`;
+        query += ` AND NOT m."custom_parameters" @> '{"${key}": "${value}"}'`;
       });
     }
 

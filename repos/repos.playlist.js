@@ -4,19 +4,17 @@ export async function createPlaylist(inputPlaylist, playlist_config) {
   try {
     const { title, feedid, type, description, playlist, ...customParameters } =
       inputPlaylist;
-
     const playlistData = await prisma.playlist.create({
       data: {
         playlist_id: feedid,
         title,
         type,
         description,
-        playlist,
+        playlist: playlist,
         custom_parameters: customParameters,
         playlist_config,
       },
     });
-
     return playlistData;
   } catch (error) {
     console.log(`Error creating playlist: ${error.message}`);
@@ -38,12 +36,11 @@ export async function updatePlaylist(playlistId, updatedData) {
         customParameters,
       },
     });
-
     return updatedPlaylist;
   } catch (error) {
-    // console.log(
-    //   `Error updating playlist with ID ${playlistId}: ${error.message}`
-    // );
+    console.log(
+      `Error updating playlist with ID ${playlistId}: ${error.message}`
+    );
     throw new Error("Failed to update playlist. Please try again later.");
   }
 }
