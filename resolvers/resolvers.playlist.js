@@ -18,13 +18,9 @@ export async function createPlaylist(playlistMetadata, dynamicPlaylistConfig) {
     playlist: convertedMediaItems,
     ...playlistMetadata,
   });
-  // console.log(playlist.playlist);
 
-  const createdPlaylist = await repos.createPlaylist(playlist);
+  const createdPlaylist = await repos.createPlaylist(playlist, dynamicPlaylistConfig);
   return formatPlaylist(createdPlaylist);
-  // return formatPlaylist(
-  //   await repos.createPlaylist(playlist, dynamicPlaylistConfig)
-  // );
 }
 
 export async function updatePlaylist(
@@ -50,7 +46,5 @@ export async function updatePlaylist(
 
 export async function getPlaylistById(playlistId) {
   const playlist = await repos.getPlaylistById(playlistId)
-  console.log(playlist);
-  // return formatPlaylist(await repos.getPlaylistById(playlistId));
   return formatPlaylist(playlist);
 }
