@@ -1,5 +1,4 @@
 import path from "path";
-
 import {
   objectType,
   inputObjectType,
@@ -12,7 +11,6 @@ import { GraphQLDateTime, GraphQLJSON } from "graphql-scalars";
 
 export const DateTime = asNexusMethod(GraphQLDateTime, "date");
 export const JSON = asNexusMethod(GraphQLJSON, "json");
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const PlaylistMediaItem = objectType({
   name: "PlaylistMediaItem",
@@ -45,7 +43,7 @@ const PlaylistMetadata = inputObjectType({
     t.string("title");
     t.string("description");
     t.string("type");
-    t.field("custom_parameters", { type: "JSON" });
+    t.field("customParameters", { type: "JSON" });
   },
 });
 
@@ -61,7 +59,7 @@ const DynamicPlaylistConfig = inputObjectType({
         },
       }),
     });
-    t.field("custom_parameters", {
+    t.field("customParameters", {
       type: inputObjectType({
         name: "CustomParameters",
         definition(t) {
@@ -79,8 +77,8 @@ const DynamicPlaylistConfig = inputObjectType({
         },
       }),
     });
-    t.int("items_per_page");
-    t.int("page_number");
+    t.int("itemsPerPage");
+    t.int("pageNumber");
   },
 });
 
@@ -91,10 +89,10 @@ const Playlist = objectType({
     t.nonNull.string("title");
     t.string("description");
     t.list.field("playlist", { type: Media });
-    t.field("custom_parameters", {
+    t.field("customParameters", {
       type: "JSON",
       resolve(parent) {
-        const { feedid, title, description, playlist, ...custom_parameters } =
+        const { feedid, title, description, playlist, ...customParameters } =
           parent;
         return custom_parameters;
       },
@@ -177,10 +175,6 @@ export const schema = makeSchema({
     PlaylistMetadata,
     DynamicPlaylistConfig,
   ],
-  outputs: {
-    schema: path.join(__dirname, "schema.graphql"),
-    typegen: path.join(__dirname, "nexus-typegen.ts"),
-  },
 });
 
 export {
