@@ -14,7 +14,6 @@ async function insertData() {
     fs.createReadStream(csvFilePath)
       .pipe(csv())
       .on('data', (row) => {
-        console.log(row)
         let tags = [];
         try {
           tags = row.tags.replace(/[\[\]"]+/g, '').split(',').map(tag => tag.trim());
