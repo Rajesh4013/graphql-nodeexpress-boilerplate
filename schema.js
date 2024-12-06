@@ -56,8 +56,8 @@ const DynamicPlaylistConfig = inputObjectType({
       type: inputObjectType({
         name: "Tags",
         definition(t) {
-          t.string("include");
-          t.string("exclude");
+          t.nullable.list.field("include", { type: "String" });
+          t.nullable.list.field("exclude", { type: "String" });
         },
       }),
     });
@@ -65,8 +65,8 @@ const DynamicPlaylistConfig = inputObjectType({
       type: inputObjectType({
         name: "CustomParameters",
         definition(t) {
-          t.field("include", { type: "JSON" });
-          t.field("exclude", { type: "JSON" });
+          t.nullable.field("include", { type: "JSON" });
+          t.nullable.field("exclude", { type: "JSON" });
         },
       }),
     });
