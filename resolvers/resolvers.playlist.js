@@ -40,7 +40,7 @@ export async function updatePlaylist(
   });
 
   return formatPlaylist(
-    await repos.updatePlaylist(playlistId, updatedPlaylist)
+    await repos.updatePlaylist(playlistId, { playlistConfig: dynamicPlaylistConfig, ...updatedPlaylist })
   );
 }
 
