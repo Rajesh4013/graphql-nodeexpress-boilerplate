@@ -1,5 +1,4 @@
 export function formatPlaylist(rawPlaylist) {
-  // console.log("In format: ", rawPlaylist);
   const { playlist_id, title, type, description, custom_parameters, playlist } =
     rawPlaylist;
   return {
