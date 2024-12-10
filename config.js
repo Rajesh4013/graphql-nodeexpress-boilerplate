@@ -10,6 +10,11 @@ const config = {
     name: process.env.DB_NAME || "dsp",
     connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || "5"),
   },
+  redis: {
+    host: process.env.REDIS_HOST || "localhost",
+    port: process.env.REDIS_PORT || "6379",
+  },
+  queueName: process.env.QUEUE_NAME || "graphql-queue",
 };
 
 export default config;
