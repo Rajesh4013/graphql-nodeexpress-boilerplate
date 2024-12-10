@@ -1,4 +1,3 @@
-import path from "path";
 import {
   objectType,
   inputObjectType,
@@ -24,16 +23,6 @@ const PlaylistMediaItem = objectType({
     t.string("tags");
     t.list.field("sources", { type: "JSON" });
     t.list.field("tracks", { type: "JSON" });
-  },
-});
-
-const Media = objectType({
-  name: "Media",
-  definition(t) {
-    t.nonNull.string("title");
-    t.string("description");
-    t.string("kind");
-    t.list.field("playlist", { type: PlaylistMediaItem });
   },
 });
 
@@ -79,24 +68,6 @@ const DynamicPlaylistConfig = inputObjectType({
     });
     t.int("itemsPerPage");
     t.int("pageNumber");
-  },
-});
-
-const Playlist = objectType({
-  name: "Playlist",
-  definition(t) {
-    t.nonNull.string("feedId");
-    t.nonNull.string("title");
-    t.string("description");
-    t.list.field("playlist", { type: Media });
-    t.field("customParameters", {
-      type: "JSON",
-      resolve(parent) {
-        const { feedid, title, description, playlist, ...customParameters } =
-          parent;
-        return custom_parameters;
-      },
-    });
   },
 });
 
@@ -169,8 +140,6 @@ export const schema = makeSchema({
     JSON,
     Query,
     Mutation,
-    Media,
-    Playlist,
     PlaylistMediaItem,
     PlaylistMetadata,
     DynamicPlaylistConfig,
@@ -178,7 +147,6 @@ export const schema = makeSchema({
 });
 
 export {
-  Media,
   PlaylistMediaItem,
   PlaylistMetadata,
   DynamicPlaylistConfig,
