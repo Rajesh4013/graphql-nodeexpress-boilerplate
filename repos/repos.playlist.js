@@ -85,12 +85,8 @@ export async function updatePlaylist(playlistId, updatedData) {
 
 export async function getPlaylistById(playlistId) {
   try {
-    const playlist = await prisma.playlist.findUnique({
-      where: {
-        playlist_id: playlistId,
-      },
-    });
-    return playlist;
+    const playlist = await prisma.$queryRaw`SELECT * FROM "Playlist" p WHERE p."playlist_id" = ${playlistId};`;
+    return playlist[0];
   } catch (error) {
     console.log(error);
     return null;
