@@ -9,7 +9,7 @@ export async function createPlaylist(playlistMetadata, dynamicPlaylistConfig) {
   const convertedMediaItems = await Promise.all(
     mediaItems.map((mediaItem) => {
       let { custom_parameters :customParameters, ...media } = mediaItem;
-      const updatedMediaItem = { ...media, ...customParameters };
+      return { ...media, ...customParameters };
     })
   );
 
@@ -34,8 +34,7 @@ export async function updatePlaylist(
   const convertedMediaItems = await Promise.all(
     mediaItems.map((mediaItem) => {
       let { custom_parameters, ...media } = mediaItem;
-      const updatedMediaItem = { ...media, ...custom_parameters };
-      return updatedMediaItem;
+      return { ...media, ...custom_parameters };
     })
   );
 
