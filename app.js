@@ -3,9 +3,13 @@ import express from "express";
 
 import { schema } from "./schema.js";
 import { createContext } from "./context.js";
+import { BullMQTask } from "./workers/generic.bullmq.js";
+import { startWorker } from "./workers/consumer.js";
+import config from "./config.js";
 
 const PORT = 5000;
 const app = express();
+export const bullMQTask = new BullMQTask(config.queueName);
 
 app.use("/greet", (req, res) => {
   res.send({ msg: "Hello World!" });
@@ -28,3 +32,4 @@ async function startServer() {
 }
 
 startServer();
+startWorker();
