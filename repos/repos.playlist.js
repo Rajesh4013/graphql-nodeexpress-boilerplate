@@ -11,10 +11,6 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
       ...customParameters
     } = inputPlaylist;
 
-    const playlistJson = playlist.map((playlistItem) => {
-      return JSON.stringify(playlistItem);
-    });
-
     const query = `
       INSERT INTO "Playlist" (
         "playlist_id",
@@ -36,7 +32,7 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
       )
       RETURNING *;
     `;
-    const playlistData = await prisma.$queryRawUnsafe(query, feedid, title, type, description, playlistJson, customParameters, playlistConfig);
+    const playlistData = await prisma.$queryRawUnsafe(query, feedid, title, type, description, playlist, customParameters, playlistConfig);
 
     return playlistData[0];
   } catch (error) {
@@ -47,41 +43,46 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
 
 export async function updatePlaylist(playlistId, updatedData) {
   try {
-    const {
-      title,
-      kind,
-      description,
-      playlist,
-      playlistConfig,
-      ...customParameters
-    } = updatedData;
-    const playlistJson = playlist.map((playlistItem) => {
-      return JSON.stringify(playlistItem);
-    });
-    const query = `
-    UPDATE "Playlist"
-    SET
-      "title" = $1,
-      "type" = $2,
-      "description" = $3,
-      "playlist" = $4::jsonb[],
-      "custom_parameters" = $5::jsonb,
-      "playlist_config" = $6::jsonb,
-      "updated_at" = NOW()
-    WHERE
-      "playlist_id" = $7
-    RETURNING "playlist_id", "title", "type", "description", "playlist", "custom_parameters";
-  `;
+    const { title, type, description, playlist, playlistConfig, customParameters } = updatedData;
 
-    const updatedPlaylist = await prisma.$queryRawUnsafe(query, title, kind, description, playlistJson, customParameters, playlistConfig, playlistId);
+    let updateFields = [];
+    let queryParams = [];
+    let paramIndex = 1;
+
+    const addField = (fieldName, value, castType = '') => {
+      if (value) {
+        updateFields.push(`"${fieldName}" = $${paramIndex++}${castType}`);
+        queryParams.push(value);
+      }
+    };
+
+    addField('title', title);
+    addField('type', type);
+    addField('description', description);
+    addField('playlist', playlist, '::jsonb[]');
+    addField('playlist_config', playlistConfig, '::jsonb');
+    if (customParameters && Object.keys(customParameters).length) {
+      addField('custom_parameters', customParameters, '::jsonb');
+    }
+
+    if (!updateFields.length) throw new Error("No fields to update");
+
+    const updateQuery = `
+      UPDATE "Playlist"
+      SET ${updateFields.join(', ')}, updated_at = NOW()
+      WHERE "playlist_id" = $${paramIndex}
+      RETURNING "playlist_id", "title", "type", "description", "playlist", "custom_parameters";
+    `;
+    queryParams.push(playlistId);
+
+    const updatedPlaylist = await prisma.$queryRawUnsafe(updateQuery, ...queryParams);
     return updatedPlaylist[0];
   } catch (error) {
-    console.log(
-      `Error updating playlist with ID ${playlistId}: ${error.message}`
-    );
+    console.error(`Error updating playlist with ID ${playlistId}: ${error.message}`);
     throw new Error("Failed to update playlist. Please try again later.");
   }
 }
+
 
 export async function getPlaylistById(playlistId) {
   try {
