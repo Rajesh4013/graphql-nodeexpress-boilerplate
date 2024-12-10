@@ -57,7 +57,6 @@ export async function fetchDynamicMediaItems(playlistConfig) {
 
     query += ` LIMIT ${itemsPerPage} OFFSET ${(pageNumber - 1) * itemsPerPage}`;
 
-    console.log(query);
     const playlistPreview = await prisma.$queryRawUnsafe(query);
 
     return playlistPreview;
