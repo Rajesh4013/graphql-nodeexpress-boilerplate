@@ -8,8 +8,8 @@ export async function createPlaylist(playlistMetadata, dynamicPlaylistConfig) {
   const mediaItems = await fetchDynamicMediaItems(dynamicPlaylistConfig);
   const convertedMediaItems = await Promise.all(
     mediaItems.map((mediaItem) => {
-      let { custom_parameters, ...media } = mediaItem;
-      return { ...media, ...custom_parameters };
+      let { custom_parameters :customParameters, ...media } = mediaItem;
+      const updatedMediaItem = { ...media, ...customParameters };
     })
   );
 
