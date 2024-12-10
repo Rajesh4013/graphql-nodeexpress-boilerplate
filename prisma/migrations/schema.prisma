@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Media {
+  media_id          String    @id @unique @default(uuid())
+  title             String
+  status            String
+  media_type        String
+  duration          Int
+  publish_date      DateTime?
+  tags              String[]  @default([])
+  custom_parameters Json      @default("{}")
+  created_at        DateTime  @default(now())
+  updated_at        DateTime? @updatedAt
+
+  @@index([tags], map: "media_tags_idx")
+  @@index([custom_parameters], map: "idx_media_custom_parameters_gin", type: Gin)
+  @@index([tags], map: "idx_media_tags_gin", type: Gin)
+}
+
+model Playlist {
+  playlist_id       String    @id @unique @default(uuid())
+  title             String
+  type              String?
+  playlist          Json[]    @default([])
+  description       String?
+  custom_parameters Json      @default("{}")
+  playlist_config   Json      @default("{}")
+  created_at        DateTime  @default(now())
+  updated_at        DateTime? @updatedAt
+
+  @@index([custom_parameters], map: "idx_playlist_custom_parameters_gin", type: Gin)
+}
