@@ -1,4 +1,6 @@
 node_modules
 
 # Ignore app log file
-logger/app.log
+logger/app.log 
+
+package-lock.json
