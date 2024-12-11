@@ -4,7 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "format": "prettier --write .",
+    "format-check": "prettier --check ."
   },
   "repository": "git@github.com:Rajesh4013/graphql-nodeexpress-boilerplate.git",
   "author": "<rajesh_kandregula@tecnics.com>",
@@ -22,7 +24,21 @@
     "pino-pretty": "^13.0.0"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
     "nodemon": "^3.1.7",
+    "prettier": "^3.4.2",
     "prisma": "^6.0.0"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint-staged"
+    }
   }
 }
