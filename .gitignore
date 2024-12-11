@@ -5,3 +5,10 @@ logger/app.log
 
 package-lock.json
 .yarn
+
+# Prettier cache
+.prettier-cache/
+
+# Husky hook scripts (keep the pre-commit file)
+.husky/*
+!/.husky/pre-commit
