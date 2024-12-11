@@ -1,10 +1,11 @@
 import { prismaConnection as prisma } from "../connection.js";
+import { logger } from "../logger/logger.js";
 
 export async function fetchMediaItems() {
   try {
     return await prisma.$queryRaw`SELECT * FROM "Media" m;`;
   } catch (err) {
-    console.error("Error fetching media items:", err);
+    logger.error(`Error fetching media items: ${err}`);
     return [];
   }
 }
@@ -14,7 +15,7 @@ export async function fetchMediaItemById(media_id) {
     const media = await prisma.$queryRaw`SELECT * FROM "Media" m WHERE m."media_id" = ${media_id}`;
     return media[0];
   } catch (err) {
-    console.error("Error fetching media item by ID:", err);
+    logger.error(`Error fetching media item by ID: ${err}`);
     return null;
   }
 }
@@ -62,9 +63,9 @@ export async function fetchDynamicMediaItems(playlistConfig) {
     return playlistPreview;
   } catch (err) {
     if (err instanceof Error) {
-      console.error("Error fetching playlist preview:", err.message);
+      logger.error(`Error fetching playlist preview: ${err.message}`);
     } else {
-      console.error("Unknown error occurred:", err);
+      logger.error(`Unknown error occurred: ${err}`);
     }
     return [];
   }

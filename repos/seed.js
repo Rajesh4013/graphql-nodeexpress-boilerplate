@@ -42,7 +42,7 @@ async function insertData() {
           rows = [];
           insertBatch(batch).then((count) => {
             totalInserted += count;
-            console.log(`Inserted ${totalInserted} records so far.`);
+            logger.info(`Inserted ${totalInserted} records so far.`);
           });
         }
       })
@@ -50,12 +50,12 @@ async function insertData() {
         if (rows.length > 0) {
           const count = await insertBatch(rows);
           totalInserted += count;
-          console.log(`Inserted ${totalInserted} records in total.`);
+          logger.info(`Inserted ${totalInserted} records in total.`);
         }
         await prisma.$disconnect();
       });
   } catch (error) {
-    console.error('Error inserting data:', error);
+    logger.error(`Error inserting data: ${error}`);
     await prisma.$disconnect();
   }
 }
@@ -65,7 +65,7 @@ async function insertBatch(batch) {
     await prisma.media.createMany({ data: batch });
     return batch.length;
   } catch (error) {
-    console.error('Error inserting batch:', error);
+    logger.error(`Error inserting batch: ${error}`);
     return 0;
   }
 }

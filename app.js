@@ -3,6 +3,7 @@ import express from "express";
 
 import { schema } from "./schema.js";
 import { createContext } from "./context.js";
+import { logger } from "./logger/logger.js";
 
 const PORT = 5000;
 const app = express();
@@ -21,7 +22,7 @@ async function startServer() {
   server.applyMiddleware({ app });
 
   app.listen(PORT, () => {
-    console.log(
+    logger.info(
       `Server running at http://localhost:${PORT}${server.graphqlPath}`
     );
   });

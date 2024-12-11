@@ -1,4 +1,5 @@
 import { prismaConnection as prisma } from "../connection.js";
+import { logger } from "../logger/logger.js";
 
 export async function createPlaylist(inputPlaylist, playlistConfig) {
   try {
@@ -40,7 +41,7 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
 
     return playlistData[0];
   } catch (error) {
-    console.log(`Error creating playlist: ${error.message}`);
+    logger.error(`Error creating playlist: ${error.message}`);
     throw new Error("Failed to create playlist. Please try again later.");
   }
 }
@@ -76,9 +77,7 @@ export async function updatePlaylist(playlistId, updatedData) {
     const updatedPlaylist = await prisma.$queryRawUnsafe(query, title, kind, description, playlistJson, customParameters, playlistConfig, playlistId);
     return updatedPlaylist[0];
   } catch (error) {
-    console.log(
-      `Error updating playlist with ID ${playlistId}: ${error.message}`
-    );
+    logger.error(`Error updating playlist with ID ${playlistId}: ${error.message}`);
     throw new Error("Failed to update playlist. Please try again later.");
   }
 }
@@ -88,7 +87,7 @@ export async function getPlaylistById(playlistId) {
     const playlist = await prisma.$queryRaw`SELECT * FROM "Playlist" p WHERE p."playlist_id" = ${playlistId};`;
     return playlist[0];
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return null;
   }
 }
