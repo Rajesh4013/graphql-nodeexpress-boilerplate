@@ -8,10 +8,6 @@ import { logger } from './logger/logger.js';
 const PORT = 5000;
 const app = express();
 
-app.use('/greet', (req, res) => {
-  res.send({ msg: 'Hello World!' });
-});
-
 const server = new ApolloServer({
   schema,
   context: createContext,
