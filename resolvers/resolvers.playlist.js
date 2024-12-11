@@ -38,19 +38,25 @@ export async function updatePlaylist(
     })
   );
 
-  const updatedPlaylist = formatPlaylist({
+  let updatedPlaylist = formatPlaylist({
     playlistId,
     playlist: convertedMediaItems,
     custom_parameters: playlistMetadata.customParameters,
     ...playlistMetadata,
   });
 
-  return formatPlaylist(
-    await repos.updatePlaylist(playlistId, { playlistConfig: dynamicPlaylistConfig, ...updatedPlaylist })
-  );
+  updatedPlaylist =  await repos.updatePlaylist(playlistId, { playlistConfig: dynamicPlaylistConfig, ...updatedPlaylist })
+ 
+  if(!updatedPlaylist){
+    return null;
+  }
+  return formatPlaylist(updatedPlaylist);
 }
 
 export async function getPlaylistById(playlistId) {
   const playlist = await repos.getPlaylistById(playlistId)
+  if(!playlist){
+    return null;
+  }
   return formatPlaylist(playlist);
 }
