@@ -124,11 +124,15 @@ const Mutation = objectType({
         { playlistId, playlistMetadata, dynamicPlaylistConfig },
         ctx
       ) => {
-        return ctx.updatePlaylist(
+        const updatedPlaylist = await ctx.updatePlaylist(
           playlistId,
           playlistMetadata,
           dynamicPlaylistConfig
         );
+        if(!updatedPlaylist){
+          throw new Error(`Playlist with ID ${playlistId} not found.`); 
+        }
+        return updatedPlaylist;
       },
     });
   },
