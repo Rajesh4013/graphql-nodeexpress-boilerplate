@@ -24,6 +24,10 @@
     "pino-pretty": "^13.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "eslint-plugin-import": "^2.31.0",
+    "globals": "^15.13.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
     "nodemon": "^3.1.7",
@@ -34,7 +38,8 @@
     "**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write",
       "git add"
-    ]
+    ],
+    "*.js": "eslint --fix"
   },
   "husky": {
     "hooks": {
