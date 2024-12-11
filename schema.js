@@ -5,84 +5,84 @@ import {
   nonNull,
   idArg,
   asNexusMethod,
-} from "nexus";
-import { GraphQLDateTime, GraphQLJSON } from "graphql-scalars";
+} from 'nexus';
+import { GraphQLDateTime, GraphQLJSON } from 'graphql-scalars';
 
-export const DateTime = asNexusMethod(GraphQLDateTime, "date");
-export const JSON = asNexusMethod(GraphQLJSON, "json");
+export const DateTime = asNexusMethod(GraphQLDateTime, 'date');
+export const JSON = asNexusMethod(GraphQLJSON, 'json');
 
 const PlaylistMediaItem = objectType({
-  name: "PlaylistMediaItem",
+  name: 'PlaylistMediaItem',
   definition(t) {
-    t.nonNull.string("title");
-    t.nonNull.string("mediaid");
-    t.string("image");
-    t.list.field("images", { type: "JSON" });
-    t.nonNull.float("duration");
-    t.nonNull.field("pubDate", { type: "DateTime" });
-    t.string("tags");
-    t.list.field("sources", { type: "JSON" });
-    t.list.field("tracks", { type: "JSON" });
+    t.nonNull.string('title');
+    t.nonNull.string('mediaid');
+    t.string('image');
+    t.list.field('images', { type: 'JSON' });
+    t.nonNull.float('duration');
+    t.nonNull.field('pubDate', { type: 'DateTime' });
+    t.string('tags');
+    t.list.field('sources', { type: 'JSON' });
+    t.list.field('tracks', { type: 'JSON' });
   },
 });
 
 const PlaylistMetadata = inputObjectType({
-  name: "PlaylistMetadata",
+  name: 'PlaylistMetadata',
   definition(t) {
-    t.string("title");
-    t.string("description");
-    t.string("type");
-    t.field("customParameters", { type: "JSON" });
+    t.string('title');
+    t.string('description');
+    t.string('type');
+    t.field('customParameters', { type: 'JSON' });
   },
 });
 
 const DynamicPlaylistConfig = inputObjectType({
-  name: "DynamicPlaylistConfig",
+  name: 'DynamicPlaylistConfig',
   definition(t) {
-    t.field("tags", {
+    t.field('tags', {
       type: inputObjectType({
-        name: "Tags",
+        name: 'Tags',
         definition(t) {
-          t.nullable.list.field("include", { type: "String" });
-          t.nullable.list.field("exclude", { type: "String" });
+          t.nullable.list.field('include', { type: 'String' });
+          t.nullable.list.field('exclude', { type: 'String' });
         },
       }),
     });
-    t.field("customParameters", {
+    t.field('customParameters', {
       type: inputObjectType({
-        name: "CustomParameters",
+        name: 'CustomParameters',
         definition(t) {
-          t.nullable.field("include", { type: "JSON" });
-          t.nullable.field("exclude", { type: "JSON" });
+          t.nullable.field('include', { type: 'JSON' });
+          t.nullable.field('exclude', { type: 'JSON' });
         },
       }),
     });
-    t.field("sort", {
+    t.field('sort', {
       type: inputObjectType({
-        name: "Sort",
+        name: 'Sort',
         definition(t) {
-          t.string("field");
-          t.string("order");
+          t.string('field');
+          t.string('order');
         },
       }),
     });
-    t.int("itemsPerPage");
-    t.int("pageNumber");
+    t.int('itemsPerPage');
+    t.int('pageNumber');
   },
 });
 
 const Query = objectType({
-  name: "Query",
+  name: 'Query',
   definition(t) {
-    t.field("media", {
-      type: "JSON",
+    t.field('media', {
+      type: 'JSON',
       args: { id: nonNull(idArg()) },
       resolve: async (_parent, { id }, ctx) => {
         return ctx.getMedia(id);
       },
     });
-    t.field("getPlaylistById", {
-      type: "JSON",
+    t.field('getPlaylistById', {
+      type: 'JSON',
       args: { playlistId: nonNull(idArg()) },
       resolve: async (_parent, { playlistId }, ctx) => {
         const playlist = await ctx.getPlaylistById(playlistId);
@@ -96,10 +96,10 @@ const Query = objectType({
 });
 
 const Mutation = objectType({
-  name: "Mutation",
+  name: 'Mutation',
   definition(t) {
-    t.field("createPlaylist", {
-      type: "JSON",
+    t.field('createPlaylist', {
+      type: 'JSON',
       args: {
         playlistMetadata: nonNull(PlaylistMetadata),
         dynamicPlaylistConfig: nonNull(DynamicPlaylistConfig),
@@ -112,8 +112,8 @@ const Mutation = objectType({
         return ctx.createPlaylist(playlistMetadata, dynamicPlaylistConfig);
       },
     });
-    t.field("updatePlaylist", {
-      type: "JSON",
+    t.field('updatePlaylist', {
+      type: 'JSON',
       args: {
         playlistId: nonNull(idArg()),
         playlistMetadata: PlaylistMetadata,
@@ -129,8 +129,8 @@ const Mutation = objectType({
           playlistMetadata,
           dynamicPlaylistConfig
         );
-        if(!updatedPlaylist){
-          throw new Error(`Playlist with ID ${playlistId} not found.`); 
+        if (!updatedPlaylist) {
+          throw new Error(`Playlist with ID ${playlistId} not found.`);
         }
         return updatedPlaylist;
       },
@@ -150,9 +150,4 @@ export const schema = makeSchema({
   ],
 });
 
-export {
-  PlaylistMediaItem,
-  PlaylistMetadata,
-  DynamicPlaylistConfig,
-  Mutation,
-};
+export { PlaylistMediaItem, PlaylistMetadata, DynamicPlaylistConfig, Mutation };

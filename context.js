@@ -1,9 +1,9 @@
-import { getMedia } from "./resolvers/resolvers.media.js";
+import { getMedia } from './resolvers/resolvers.media.js';
 import {
   createPlaylist,
   updatePlaylist,
   getPlaylistById,
-} from "./resolvers/resolvers.playlist.js";
+} from './resolvers/resolvers.playlist.js';
 
 export const createContext = () => {
   return {

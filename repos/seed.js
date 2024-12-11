@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { logger } from '../logger/logger.js';
 
 const prisma = new PrismaClient();
-const csvFilePath = "100_dataset.csv";
+const csvFilePath = '100_dataset.csv';
 
 async function insertData() {
   try {
@@ -17,7 +17,10 @@ async function insertData() {
       .on('data', (row) => {
         let tags = [];
         try {
-          tags = row.tags.replace(/[\[\]"]+/g, '').split(',').map(tag => tag.trim());
+          tags = row.tags
+            .replace(/[\[\]"]+/g, '')
+            .split(',')
+            .map((tag) => tag.trim());
         } catch {}
 
         let custom_parameters = {};

@@ -15,14 +15,8 @@ const fileTransport = pino.destination({
   sync: false,
 });
 
-const streams = [
-  { stream: prettyTransport },
-  { stream: fileTransport },
-];
+const streams = [{ stream: prettyTransport }, { stream: fileTransport }];
 
-const logger = pino(
-  { level: 'info' },
-  pino.multistream(streams)
-);
+const logger = pino({ level: 'info' }, pino.multistream(streams));
 
 export { logger };

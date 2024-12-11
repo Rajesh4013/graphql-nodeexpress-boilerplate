@@ -1,5 +1,5 @@
-import { prismaConnection as prisma } from "../connection.js";
-import { logger } from "../logger/logger.js";
+import { prismaConnection as prisma } from '../connection.js';
+import { logger } from '../logger/logger.js';
 
 export async function fetchMediaItems() {
   try {
@@ -12,7 +12,8 @@ export async function fetchMediaItems() {
 
 export async function fetchMediaItemById(media_id) {
   try {
-    const media = await prisma.$queryRaw`SELECT * FROM "Media" m WHERE m."media_id" = ${media_id}`;
+    const media =
+      await prisma.$queryRaw`SELECT * FROM "Media" m WHERE m."media_id" = ${media_id}`;
     return media[0];
   } catch (err) {
     logger.error(`Error fetching media item by ID: ${err}`);
@@ -33,7 +34,7 @@ export async function fetchDynamicMediaItems(playlistConfig) {
     let query = `SELECT * FROM "Media" m WHERE 1=1`;
 
     if (tags?.include) {
-      query += ` AND m."tags" @> ARRAY${JSON.stringify(tags.include).replaceAll("\"", "'")}::text[]`;
+      query += ` AND m."tags" @> ARRAY${JSON.stringify(tags.include).replaceAll('"', "'")}::text[]`;
     }
 
     if (tags?.exclude) {
