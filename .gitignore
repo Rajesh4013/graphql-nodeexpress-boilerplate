@@ -4,3 +4,4 @@ node_modules
 logger/app.log 
 
 package-lock.json
+.yarn
