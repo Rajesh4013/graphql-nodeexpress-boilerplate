@@ -1,6 +1,8 @@
 import fs from 'fs';
+
 import csv from 'csv-parser';
 import { PrismaClient } from '@prisma/client';
+
 import { logger } from '../logger/logger.js';
 
 const prisma = new PrismaClient();
@@ -18,15 +20,19 @@ async function insertData() {
         let tags = [];
         try {
           tags = row.tags
-            .replace(/[\[\]"]+/g, '')
+            .replace(new RegExp('[[]"', 'g'), '')
             .split(',')
             .map((tag) => tag.trim());
-        } catch {}
+        } catch (error) {
+          logger.error(`Error parsing tags for row ${row}: ${error}`);
+        }
 
         let custom_parameters = {};
         try {
           custom_parameters = JSON.parse(row.custom_parameters);
-        } catch {}
+        } catch (error) {
+          logger.error(`Error parsing custom parameters: ${error}`);
+        }
 
         rows.push({
           media_id: row.id,
