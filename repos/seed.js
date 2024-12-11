@@ -1,9 +1,10 @@
 import fs from 'fs';
 import csv from 'csv-parser';
 import { PrismaClient } from '@prisma/client';
+import { logger } from '../logger/logger.js';
 
 const prisma = new PrismaClient();
-const csvFilePath = 'dataset.csv';
+const csvFilePath = "100_dataset.csv";
 
 async function insertData() {
   try {
