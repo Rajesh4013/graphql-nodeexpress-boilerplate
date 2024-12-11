@@ -1,7 +1,6 @@
 import { fetchDynamicMediaItems } from "../repos/repos.media.js";
 import { updatePlaylist } from "../repos/repos.playlist.js"
 export async function processJob(message) {
-    console.log(`Processing message ${JSON.stringify(message)}`);
     const mediaItems = await fetchDynamicMediaItems(message.dynamicPlaylistConfig);
     await updatePlaylist(message.id, { playlist: mediaItems });
 }

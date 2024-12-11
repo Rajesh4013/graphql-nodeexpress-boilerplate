@@ -4,11 +4,10 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
   try {
     const {
       title,
-      feedid,
+      playlistId,
       type,
       description,
-      playlist,
-      ...customParameters
+      customParameters
     } = inputPlaylist;
 
     const query = `
@@ -17,7 +16,6 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
         "title",
         "type",
         "description",
-        "playlist",
         "custom_parameters",
         "playlist_config"
       )
@@ -26,13 +24,12 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
         $2,
         $3,
         $4,
-        $5::jsonb[],
-        $6::jsonb,
-        $7::jsonb
+        $5::jsonb,
+        $6::jsonb
       )
-      RETURNING *;
+      RETURNING "playlist_id", "title", "type", "description", "custom_parameters";
     `;
-    const playlistData = await prisma.$queryRawUnsafe(query, feedid, title, type, description, playlist, customParameters, playlistConfig);
+    const playlistData = await prisma.$queryRawUnsafe(query, playlistId, title, type, description, customParameters, playlistConfig);
 
     return playlistData[0];
   } catch (error) {
