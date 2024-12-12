@@ -53,5 +53,9 @@ export async function getPlaylistById(playlistId) {
   if (!playlist) {
     return null;
   }
+  playlist.playlist = playlist.playlist.map((mediaItem) => {
+    let { custom_parameters: customParameters, ...media } = mediaItem;
+    return { ...media, ...customParameters };
+  })
   return formatPlaylist(playlist);
 }

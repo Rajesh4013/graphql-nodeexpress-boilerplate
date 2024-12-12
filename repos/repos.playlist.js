@@ -93,7 +93,25 @@ export async function updatePlaylist(playlistId, updatedData) {
 export async function getPlaylistById(playlistId) {
   try {
     const playlist =
-      await prisma.$queryRaw`SELECT * FROM "Playlist" p WHERE p."playlist_id" = ${playlistId};`;
+      await prisma.$queryRaw`SELECT
+        p.playlist_id,
+        p.title,
+        p.description,
+        p.type,
+        p.custom_parameters,
+        json_agg(row_to_json(m)) as playlist,
+        p.playlist_config
+    FROM
+        "Playlist" p
+    JOIN
+        "Media" m
+    ON
+        m.media_id = ANY(p.media_id)
+    WHERE
+        p.playlist_id = ${playlistId}
+    GROUP BY
+        p.playlist_id, p.title, p.description, p.type, p.custom_parameters;
+    `;
     return playlist[0];
   } catch (error) {
     logger.error(error);
