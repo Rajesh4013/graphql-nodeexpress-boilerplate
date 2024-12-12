@@ -42,7 +42,7 @@ export async function fetchMediaItemById(media_id) {
   }
 }
 
-export async function fetchDynamicMediaItems(playlistConfig) {
+export async function fetchDynamicMediaIds(playlistConfig) {
   const {
     tags,
     customParameters,
@@ -71,40 +71,32 @@ export async function fetchDynamicMediaItems(playlistConfig) {
     ? tags.exclude.map((tag) => `!${tag.replaceAll(" ", " & ")}`).join(" & ")
     : "";
 
-  const customParamsQuery = `${customParamsInclude} & ${customParamsExclude}`;
-  const tagsQuery = `${tagsInclude} & ${tagsExclude}`;
-  const searchQuery = `${customParamsQuery} & ${tagsQuery}`;
+  const customParamsQuery = [customParamsInclude, customParamsExclude]
+    .filter(Boolean)
+    .join(' & ');
+
+  const tagsQuery = [tagsInclude, tagsExclude].filter(Boolean).join(' & ');
+
+  const searchQuery = [customParamsQuery, tagsQuery]
+    .filter(Boolean)
+    .join(' & ');
 
   try {
-    let query = `SELECT
-      media_id,
-      title,
-      status,
-      media_type,
-      duration,
-      publish_date,
-      tags,
-      custom_parameters,
-      created_at,
-      updated_at
-    FROM
-      "Media" m
-    WHERE 1 = 1`;
+    let query = `
+    SELECT
+      ARRAY(
+        SELECT m.media_id
+        FROM "Media" m
+        WHERE 1 = 1
+        ${searchQuery ? `AND m.searchable @@ to_tsquery('english', '${searchQuery.replace(/'/g, "''")}')` : ''}
+        ${sort?.field ? `ORDER BY m."${sort.field}" ${sort?.order || 'ASC'}` : ''}
+        LIMIT ${itemsPerPage} OFFSET ${(pageNumber - 1) * itemsPerPage}
+      ) AS media_ids;
+  `;
 
-    if (searchQuery) {
-      const sanitizedQuery = searchQuery.replace(/'/g, "''");
-      query += ` AND m.searchable @@ to_tsquery('english', '${sanitizedQuery}')`;
-    }
+    const result = await prisma.$queryRawUnsafe(query);
+    return result[0]?.media_ids || [];
 
-    if (sort?.field && sort?.order) {
-      query += ` ORDER BY m."${sort.field}" ${sort.order}`;
-    }
-
-    query += ` LIMIT ${itemsPerPage} OFFSET ${(pageNumber - 1) * itemsPerPage}`;
-
-    const playlistPreview = await prisma.$queryRawUnsafe(query);
-
-    return playlistPreview;
   } catch (err) {
     if (err instanceof Error) {
       logger.error(`Error fetching playlist preview: ${err.message}`);
