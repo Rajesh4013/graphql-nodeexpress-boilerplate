@@ -1,12 +1,12 @@
 export function formatPlaylist(rawPlaylist) {
-  const { playlist_id, title, type, description, custom_parameters, playlist } =
+  const { playlist_id, title, type, description, custom_parameters, media_id } =
     rawPlaylist;
   return {
     title,
     feedid: playlist_id,
     description,
     type,
-    playlist,
+    media_id,
     ...(custom_parameters || {}),
   };
 }
