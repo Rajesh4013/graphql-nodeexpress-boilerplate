@@ -31,7 +31,7 @@ export async function fetchDynamicMediaItems(playlistConfig) {
   } = playlistConfig;
 
   try {
-    let query = `SELECT * FROM "Media" m WHERE 1=1`;
+    let query = `SELECT m."media_id" FROM "Media" m WHERE 1=1`;
 
     if (tags?.include) {
       query += ` AND m."tags" @> ARRAY${JSON.stringify(tags.include).replaceAll('"', "'")}::text[]`;
