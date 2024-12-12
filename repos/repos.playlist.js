@@ -3,12 +3,8 @@ import { logger } from '../logger/logger.js';
 
 export async function createPlaylist(inputPlaylist, playlistConfig) {
   try {
-    const { title, feedid, type, description, playlist, ...customParameters } =
+    const { title, playlistId, type, description, mediaIds, customParameters } =
       inputPlaylist;
-
-    const playlistJson = playlist.map((playlistItem) => {
-      return JSON.stringify(playlistItem);
-    });
 
     const query = `
       INSERT INTO "Playlist" (
@@ -16,7 +12,7 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
         "title",
         "type",
         "description",
-        "playlist",
+        "media_id",
         "custom_parameters",
         "playlist_config"
       )
@@ -25,19 +21,19 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
         $2,
         $3,
         $4,
-        $5::jsonb[],
+        $5::text[],
         $6::jsonb,
         $7::jsonb
       )
-      RETURNING *;
+      RETURNING "playlist_id", "title", "description", "type", "custom_parameters";
     `;
     const playlistData = await prisma.$queryRawUnsafe(
       query,
-      feedid,
+      playlistId,
       title,
       type,
       description,
-      playlistJson,
+      mediaIds,
       customParameters,
       playlistConfig
     );
@@ -53,36 +49,34 @@ export async function updatePlaylist(playlistId, updatedData) {
   try {
     const {
       title,
-      kind,
+      type,
       description,
-      playlist,
+      mediaIds,
       playlistConfig,
-      ...customParameters
+      customParameters,
     } = updatedData;
-    const playlistJson = playlist.map((playlistItem) => {
-      return JSON.stringify(playlistItem);
-    });
+
     const query = `
     UPDATE "Playlist"
     SET
       "title" = $1,
       "type" = $2,
       "description" = $3,
-      "playlist" = $4::jsonb[],
+      "media_id" = $4,
       "custom_parameters" = $5::jsonb,
       "playlist_config" = $6::jsonb,
       "updated_at" = NOW()
     WHERE
       "playlist_id" = $7
-    RETURNING "playlist_id", "title", "type", "description", "playlist", "custom_parameters";
+    RETURNING "playlist_id", "title", "type", "description", "custom_parameters";
   `;
 
     const updatedPlaylist = await prisma.$queryRawUnsafe(
       query,
       title,
-      kind,
+      type,
       description,
-      playlistJson,
+      mediaIds,
       customParameters,
       playlistConfig,
       playlistId
