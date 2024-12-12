@@ -3,20 +3,16 @@ import { logger } from '../logger/logger.js';
 
 export async function createPlaylist(inputPlaylist, playlistConfig) {
   try {
-    const { title, feedid, type, description, playlist, ...customParameters } =
+    const { title, feedid, type, description, media_id, ...customParameters } =
       inputPlaylist;
-
-    const playlistJson = playlist.map((playlistItem) => {
-      return JSON.stringify(playlistItem);
-    });
-
+    
     const query = `
       INSERT INTO "Playlist" (
         "playlist_id",
         "title",
         "type",
         "description",
-        "playlist",
+        "media_id",
         "custom_parameters",
         "playlist_config"
       )
@@ -25,7 +21,7 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
         $2,
         $3,
         $4,
-        $5::jsonb[],
+        $5::text[],
         $6::jsonb,
         $7::jsonb
       )
@@ -37,7 +33,7 @@ export async function createPlaylist(inputPlaylist, playlistConfig) {
       title,
       type,
       description,
-      playlistJson,
+      media_id,
       customParameters,
       playlistConfig
     );
@@ -55,26 +51,24 @@ export async function updatePlaylist(playlistId, updatedData) {
       title,
       kind,
       description,
-      playlist,
+      media_id,
       playlistConfig,
       ...customParameters
     } = updatedData;
-    const playlistJson = playlist.map((playlistItem) => {
-      return JSON.stringify(playlistItem);
-    });
+
     const query = `
     UPDATE "Playlist"
     SET
       "title" = $1,
       "type" = $2,
       "description" = $3,
-      "playlist" = $4::jsonb[],
+      "media_id" = $4::text[],
       "custom_parameters" = $5::jsonb,
       "playlist_config" = $6::jsonb,
       "updated_at" = NOW()
     WHERE
       "playlist_id" = $7
-    RETURNING "playlist_id", "title", "type", "description", "playlist", "custom_parameters";
+    RETURNING "playlist_id", "title", "type", "description", "media_id", "custom_parameters";
   `;
 
     const updatedPlaylist = await prisma.$queryRawUnsafe(
@@ -82,7 +76,7 @@ export async function updatePlaylist(playlistId, updatedData) {
       title,
       kind,
       description,
-      playlistJson,
+      media_id,
       customParameters,
       playlistConfig,
       playlistId
