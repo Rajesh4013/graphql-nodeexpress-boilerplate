@@ -8,20 +8,21 @@ datasource db {
 }
 
 model Media {
-  media_id          String    @id @unique @default(uuid())
+  media_id          String                   @id @unique @default(uuid())
   title             String
   status            String
   media_type        String
   duration          Int
   publish_date      DateTime?
-  tags              String[]  @default([])
-  custom_parameters Json      @default("{}")
-  created_at        DateTime  @default(now())
-  updated_at        DateTime? @updatedAt
+  tags              String[]                 @default([])
+  custom_parameters Json                     @default("{}")
+  created_at        DateTime                 @default(now())
+  updated_at        DateTime?                @updatedAt
+  searchable        Unsupported("tsvector")?
 
-  @@index([tags], map: "media_tags_idx")
   @@index([custom_parameters], map: "idx_media_custom_parameters_gin", type: Gin)
   @@index([tags], map: "idx_media_tags_gin", type: Gin)
+  @@index([searchable], map: "searchable_media_idx", type: Gin)
 }
 
 model Playlist {
@@ -35,6 +36,7 @@ model Playlist {
   created_at        DateTime  @default(now())
   updated_at        DateTime? @updatedAt
 
-  @@index([custom_parameters], map: "idx_playlist_custom_parameters_gin", type: Gin)
-  @@index([media_id], map: "idx_media_id_gin", type: Gin)
+  @@index([media_id], map: "playlist_media_id_idx_gin", type: Gin)
+  @@index([playlist_config], map: "playlist_config_idx", type: Gin)
+  @@index([custom_parameters], map: "playlist_custom_parameters_idx", type: Gin)
 }
