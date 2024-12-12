@@ -6,7 +6,9 @@
   "scripts": {
     "start": "nodemon app.js",
     "format": "prettier --write .",
-    "format-check": "prettier --check ."
+    "format-check": "prettier --check .",
+    "deploy-migrations": "npx prisma migrate deploy",
+    "seed-data": "node repos/seed.js"
   },
   "repository": "git@github.com:Rajesh4013/graphql-nodeexpress-boilerplate.git",
   "author": "<rajesh_kandregula@tecnics.com>",
