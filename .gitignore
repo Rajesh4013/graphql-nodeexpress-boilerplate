@@ -1,1 +1,15 @@
 node_modules
+
+# Ignore app log file
+logger/app.log 
+
+package-lock.json
+yarn.lock
+.yarn
+
+# Prettier cache
+.prettier-cache/
+
+# Husky hook scripts (keep the pre-commit file)
+.husky/*
+!/.husky/pre-commit

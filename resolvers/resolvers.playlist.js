@@ -1,8 +1,8 @@
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
-import * as repos from "../repos/repos.playlist.js";
-import { fetchDynamicMediaItems } from "../repos/repos.media.js";
-import { formatPlaylist } from "../utils/utils.playlist.js";
+import * as repos from '../repos/repos.playlist.js';
+import { fetchDynamicMediaItems } from '../repos/repos.media.js';
+import { formatPlaylist } from '../utils/utils.playlist.js';
 
 export async function createPlaylist(playlistMetadata, dynamicPlaylistConfig) {
   const mediaItems = await fetchDynamicMediaItems(dynamicPlaylistConfig);
@@ -21,7 +21,10 @@ export async function createPlaylist(playlistMetadata, dynamicPlaylistConfig) {
     ...playlistMetadata,
   });
 
-  const createdPlaylist = await repos.createPlaylist(playlist, dynamicPlaylistConfig);
+  const createdPlaylist = await repos.createPlaylist(
+    playlist,
+    dynamicPlaylistConfig
+  );
   return formatPlaylist(createdPlaylist);
 }
 
@@ -38,19 +41,28 @@ export async function updatePlaylist(
     })
   );
 
-  const updatedPlaylist = formatPlaylist({
+  let updatedPlaylist = formatPlaylist({
     playlistId,
     playlist: convertedMediaItems,
     custom_parameters: playlistMetadata.customParameters,
     ...playlistMetadata,
   });
 
-  return formatPlaylist(
-    await repos.updatePlaylist(playlistId, { playlistConfig: dynamicPlaylistConfig, ...updatedPlaylist })
-  );
+  updatedPlaylist = await repos.updatePlaylist(playlistId, {
+    playlistConfig: dynamicPlaylistConfig,
+    ...updatedPlaylist,
+  });
+
+  if (!updatedPlaylist) {
+    return null;
+  }
+  return formatPlaylist(updatedPlaylist);
 }
 
 export async function getPlaylistById(playlistId) {
-  const playlist = await repos.getPlaylistById(playlistId)
+  const playlist = await repos.getPlaylistById(playlistId);
+  if (!playlist) {
+    return null;
+  }
   return formatPlaylist(playlist);
 }

@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import config from "./config.js";
+import { PrismaClient } from '@prisma/client';
+import config from './config.js';
 
 const prismaConnection = new PrismaClient({
   datasources: {
@@ -7,7 +7,7 @@ const prismaConnection = new PrismaClient({
       url: `postgresql://${config.db.user}:${config.db.pass}@${config.db.host}/${config.db.name}?connection_limit=${config.db.connectionLimit}`,
     },
   },
-  log: ["info"],
+  log: ['info'],
 });
 
 export { prismaConnection };

@@ -33,16 +33,16 @@ CREATE TABLE "Playlist" (
 CREATE UNIQUE INDEX "Media_media_id_key" ON "Media"("media_id");
 
 -- CreateIndex
-CREATE INDEX "media_custom_parameters_idx" ON "Media" USING GIN ("custom_parameters");
+CREATE INDEX "media_tags_idx" ON "Media"("tags");
 
 -- CreateIndex
-CREATE INDEX "media_tags_idx" ON "Media" USING GIN ("tags");
+CREATE INDEX "idx_media_custom_parameters_gin" ON "Media" USING GIN ("custom_parameters");
+
+-- CreateIndex
+CREATE INDEX "idx_media_tags_gin" ON "Media" USING GIN ("tags");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Playlist_playlist_id_key" ON "Playlist"("playlist_id");
 
 -- CreateIndex
-CREATE INDEX "playlist_custom_parameters_idx" ON "Playlist" USING GIN ("custom_parameters");
-
--- CreateIndex
-CREATE INDEX "playlist_config_idx" ON "Playlist"("playlist_config");
+CREATE INDEX "idx_playlist_custom_parameters_gin" ON "Playlist" USING GIN ("custom_parameters");

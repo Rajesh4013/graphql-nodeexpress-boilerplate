@@ -1,9 +1,12 @@
 import fs from 'fs';
+
 import csv from 'csv-parser';
 import { PrismaClient } from '@prisma/client';
 
+import { logger } from '../logger/logger.js';
+
 const prisma = new PrismaClient();
-const csvFilePath = 'dataset.csv';
+const csvFilePath = '100_dataset.csv';
 
 async function insertData() {
   try {
@@ -16,13 +19,20 @@ async function insertData() {
       .on('data', (row) => {
         let tags = [];
         try {
-          tags = row.tags.replace(/[\[\]"]+/g, '').split(',').map(tag => tag.trim());
-        } catch {}
+          tags = row.tags
+            .replace(new RegExp('[[]"', 'g'), '')
+            .split(',')
+            .map((tag) => tag.trim());
+        } catch (error) {
+          logger.error(`Error parsing tags for row ${row}: ${error}`);
+        }
 
         let custom_parameters = {};
         try {
           custom_parameters = JSON.parse(row.custom_parameters);
-        } catch {}
+        } catch (error) {
+          logger.error(`Error parsing custom parameters: ${error}`);
+        }
 
         rows.push({
           media_id: row.id,
@@ -42,7 +52,7 @@ async function insertData() {
           rows = [];
           insertBatch(batch).then((count) => {
             totalInserted += count;
-            console.log(`Inserted ${totalInserted} records so far.`);
+            logger.info(`Inserted ${totalInserted} records so far.`);
           });
         }
       })
@@ -50,12 +60,12 @@ async function insertData() {
         if (rows.length > 0) {
           const count = await insertBatch(rows);
           totalInserted += count;
-          console.log(`Inserted ${totalInserted} records in total.`);
+          logger.info(`Inserted ${totalInserted} records in total.`);
         }
         await prisma.$disconnect();
       });
   } catch (error) {
-    console.error('Error inserting data:', error);
+    logger.error(`Error inserting data: ${error}`);
     await prisma.$disconnect();
   }
 }
@@ -65,7 +75,7 @@ async function insertBatch(batch) {
     await prisma.media.createMany({ data: batch });
     return batch.length;
   } catch (error) {
-    console.error('Error inserting batch:', error);
+    logger.error(`Error inserting batch: ${error}`);
     return 0;
   }
 }
