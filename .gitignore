@@ -4,6 +4,7 @@ node_modules
 logger/app.log 
 
 package-lock.json
+yarn.lock
 .yarn
 
 # Prettier cache

@@ -19,6 +19,7 @@ model Media {
   created_at        DateTime  @default(now())
   updated_at        DateTime? @updatedAt
 
+  @@index([tags], map: "media_tags_idx")
   @@index([custom_parameters], map: "idx_media_custom_parameters_gin", type: Gin)
   @@index([tags], map: "idx_media_tags_gin", type: Gin)
 }
@@ -27,7 +28,7 @@ model Playlist {
   playlist_id       String    @id @unique @default(uuid())
   title             String
   type              String?
-  playlist          Json[]    @default([])
+  media_id          String[]  @default([])
   description       String?
   custom_parameters Json      @default("{}")
   playlist_config   Json      @default("{}")
@@ -35,4 +36,5 @@ model Playlist {
   updated_at        DateTime? @updatedAt
 
   @@index([custom_parameters], map: "idx_playlist_custom_parameters_gin", type: Gin)
+  @@index([media_id], map: "idx_media_id_gin", type: Gin)
 }
