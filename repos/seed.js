@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 import { logger } from '../logger/logger.js';
 
 const prisma = new PrismaClient();
-const csvFilePath = '100_dataset.csv';
+const csvFilePath = 'repos/100_dataset.csv';
 
 async function insertData() {
   try {
